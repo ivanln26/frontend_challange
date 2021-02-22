@@ -105,6 +105,7 @@ function Form() {
         <input
           onChange={e => updateField({ name: e.target.value })}
           placeholder="Name"
+          required
           type="text"
           value={fields.name}
         />
@@ -112,6 +113,7 @@ function Form() {
         <input
           onChange={e => updateField({ surname: e.target.value })}
           placeholder="Surname"
+          required
           type="text"
           value={fields.surname}
         />
@@ -128,6 +130,7 @@ function Form() {
         <input
           onChange={e => updateField({ birthdate: e.target.value })}
           placeholder="Birthdate"
+          required
           type="text"
           value={fields.birthdate}
         />
