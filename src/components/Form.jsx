@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { GoogleSpreadsheet } from "google-spreadsheet";
+import { useEffect, useState } from "react";
+
+import credentials from "./credentials.json";
 
 const months = {
   1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "H",
@@ -75,8 +78,13 @@ const letters = (word) => {
   return [consonants, vowels];
 }
 
-const onSubmit = (data, setCode) => {
-  setCode(encode(data));
+const onSubmit = (data, setCode, sheet) => {
+  const code = encode(data);
+  data = {...data, code: code}
+  setCode(code);
+  (async function () {
+    await sheet.addRow(data);
+  }());
 };
 
 const useForm = () => {
@@ -95,13 +103,26 @@ const useForm = () => {
 };
 
 function Form() {
-  const [fields, updateField] = useForm();
-
   const [code, setCode] = useState(Array(10).fill("X").join(""));
+  const [fields, updateField] = useForm();
+  const [sheet, setSheet] = useState();
+
+  useEffect(() => {
+    (async function () {
+      const doc = new GoogleSpreadsheet("1U3mKKdMzBvXqIDXii_wnzaTOGB35yX0gACbL5_jPb5g");
+        doc.useServiceAccountAuth({
+          client_email: credentials["client_email"],
+          private_key: credentials["private_key"],
+        });
+        await doc.loadInfo();
+        const sh = doc.sheetsById[0];
+        setSheet(sh);
+    }());
+  }, ['']);
 
   return (
     <div>
-      <form action="#" onSubmit={() => onSubmit(fields, setCode)}>
+      <form action="#" onSubmit={() => onSubmit(fields, setCode, sheet)}>
         <input
           onChange={e => updateField({ name: e.target.value })}
           placeholder="Name"
