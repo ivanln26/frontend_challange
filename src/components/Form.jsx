@@ -79,13 +79,23 @@ const onSubmit = (data, setCode) => {
   setCode(encode(data));
 };
 
-function Form() {
-  const [fields, setFields] = useState({
+const useForm = () => {
+  const [fields, setField] = useState({
     birthdate: "",
     gender: "M",
     name: "",
     surname: "",
   });
+
+  const updateField = (value) => {
+    setField({ ...fields, ...value });
+  };
+
+  return [fields, updateField];
+};
+
+function Form() {
+  const [fields, updateField] = useForm();
 
   const [code, setCode] = useState(Array(10).fill("X").join(""));
 
@@ -93,14 +103,14 @@ function Form() {
     <div>
       <form action="#" onSubmit={() => onSubmit(fields, setCode)}>
         <input
-          onChange={e => setFields({ ...fields, name: e.target.value })}
+          onChange={e => updateField({ name: e.target.value })}
           placeholder="Name"
           type="text"
           value={fields.name}
         />
         <br />
         <input
-          onChange={e => setFields({ ...fields, surname: e.target.value })}
+          onChange={e => updateField({ surname: e.target.value })}
           placeholder="Surname"
           type="text"
           value={fields.surname}
@@ -108,7 +118,7 @@ function Form() {
         <br />
         Gender:
         <select
-          onChange={e => setFields({ ...fields, gender: e.target.value })}
+          onChange={e => updateField({ gender: e.target.value })}
           value={fields.gender}
         >
           <option value="M">Male</option>
@@ -116,7 +126,7 @@ function Form() {
         </select>
         <br />
         <input
-          onChange={e => setFields({ ...fields, birthdate: e.target.value })}
+          onChange={e => updateField({ birthdate: e.target.value })}
           placeholder="Birthdate"
           type="text"
           value={fields.birthdate}
