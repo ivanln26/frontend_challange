@@ -8,7 +8,23 @@ const months = {
 const encode = (data) => {
   const surname = encodeSurname(data.surname);
   const name = encodeName(data.name);
-  console.log(surname, name)
+  const date = encodeBirthdate(data.birthdate, data.gender);
+  const code = [surname, name, date].join("");
+  return code;
+};
+
+const encodeBirthdate = (date, gender) => {
+  const [day, month, year] = date.split("/");
+  const yearDigits = year.slice(year.length - 2);
+  const monthLetter = months[parseInt(month)];
+  let dayDigits = day;
+  if (gender === "M" && day < 10) {
+    dayDigits = "0" + parseInt(dayDigits);
+  }
+  if (gender === "F") {
+    dayDigits = parseInt(dayDigits) + 40;
+  }
+  return [yearDigits, monthLetter, dayDigits].join("");
 };
 
 const encodeName = (name) => {
@@ -29,7 +45,7 @@ const encodeName = (name) => {
     res.push("X");
   }
   return res.join("");
-}
+};
 
 const encodeSurname = (surname) => {
   surname = surname.toUpperCase().split("");
@@ -59,41 +75,56 @@ const letters = (word) => {
   return [consonants, vowels];
 }
 
-const onSubmit = (data) => {
-  encode(data);
+const onSubmit = (data, setCode) => {
+  setCode(encode(data));
 };
 
 function Form() {
-  const [fields, setFields] = useState({ name: "", surname: "" });
+  const [fields, setFields] = useState({
+    birthdate: "",
+    gender: "M",
+    name: "",
+    surname: "",
+  });
+
+  const [code, setCode] = useState(Array(10).fill("X").join(""));
 
   return (
     <div>
-      <form action="#" onSubmit={() => onSubmit(fields)}>
+      <form action="#" onSubmit={() => onSubmit(fields, setCode)}>
         <input
           onChange={e => setFields({ ...fields, name: e.target.value })}
           placeholder="Name"
           type="text"
+          value={fields.name}
         />
         <br />
         <input
           onChange={e => setFields({ ...fields, surname: e.target.value })}
           placeholder="Surname"
           type="text"
+          value={fields.surname}
         />
         <br />
-        <select name="" id="">
-          <option value=""></option>
+        Gender:
+        <select
+          onChange={e => setFields({ ...fields, gender: e.target.value })}
+          value={fields.gender}
+        >
+          <option value="M">Male</option>
+          <option value="F">Female</option>
         </select>
         <br />
-        <input type="text" />
+        <input
+          onChange={e => setFields({ ...fields, birthdate: e.target.value })}
+          placeholder="Birthdate"
+          type="text"
+          value={fields.birthdate}
+        />
         <br />
         <button type="submit">Submit</button>
       </form>
-      Your tax code is: XXXXXXXXXXXX
-      <br />
-      {fields.name}
-      <br />
-      {fields.surname}
+      Your tax code is: {code}
     </div>
   );
 }
