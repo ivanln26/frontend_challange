@@ -1,4 +1,4 @@
-import { encodeBirthdate, encodeName, encodeSurname } from "./components/Form";
+import { encodeBirthdate, encodeName, encodeSurname } from "./encode";
 
 test("encode birthdate", () => {
   expect(encodeBirthdate("10/02/1985", "M")).toBe("85B10");
