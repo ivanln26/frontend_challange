@@ -38,6 +38,7 @@ const encodeName = (name) => {
     res.push(consonants[0]);
     res.push(consonants[2]);
     res.push(consonants[3]);
+    return res.join("");
   }
   res.push(...consonants.slice(0, 3));
   if (res.length < 3) {
@@ -164,3 +165,9 @@ function Form() {
 }
 
 export default Form;
+
+export {
+  encodeBirthdate,
+  encodeName,
+  encodeSurname
+};
