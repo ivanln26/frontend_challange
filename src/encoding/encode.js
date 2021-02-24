@@ -12,7 +12,12 @@ const encode = (data) => {
 };
 
 const encodeBirthdate = (date, gender) => {
-  const [day, month, year] = date.split("/");
+  let [day, month, year] = date.split("/");
+  if (day === undefined || month === undefined || year === undefined) {
+    day = String(new Date().getDay());
+    month = String(new Date().getMonth());
+    year = String(new Date().getFullYear());
+  }
   const yearDigits = year.slice(year.length - 2);
   const monthLetter = months[parseInt(month)];
   let dayDigits = day;
